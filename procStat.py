@@ -67,8 +67,9 @@ def countUserProc():
     return dict(usrProc=usrProcNo, sysProc=sysProcNo, kswapdRunTime=kswapdRunTime)
 
 def getOOMScore():
+    oomCmd = r"""ls /proc|grep ^[1-9]|while read l;do read comm < /proc/$l/comm;read oom < /proc/$l/oom_score_adj;if [ $oom -gt 0 ]; then printf "%d\\t%s\\t%d\\n" $l $comm $oom;fi;done"""
     oom = []
-    ret = adbShellCmd('./data/oom.sh').splitlines()
+    ret = adbShellCmd(oomCmd).splitlines()
     oom = [x for x in ret if (x.__len__() > 0 and x.split()[0].isdigit())]
 
     oomList = []
